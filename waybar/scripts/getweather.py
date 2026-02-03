@@ -1,10 +1,7 @@
-#!/bin/python
-# NEEDS MASSIVE IMPROVEMENTS BUT IT WORKS, YIPPIE
-# To do next:
-# Get wind str
-# Get precInt meaning
-# Argument functionality in the terminal
-# More things, the sky is the limit
+#!/usr/bin/env python3
+import requests
+import sys
+
 HELP_MESSAGE ='''Usage: ./getweather.py CITY [LANGUAGE] [OPTION...]
 Get a simple weather forecast for your city.
 
@@ -20,20 +17,31 @@ Options:
 
 For now the only cities that are supported are portuguese cities,
 the major ones as listed in the IPMA website.
-If you want to use the program, don't use the help flags.'''
+If you want to use the program, don't use the help flags.
+More flags to come in the feature I guess, idk what I could whant'''
 LANGUAGUES = ('PT','EN')
+VERBOSITY = ('-v', '-q')
 defaultLang = 'EN'
-import requests
-import sys
+defaultVerbosity = 1
 
+#--get arguments--#
 args = sys.argv[1:]
 if len(args) < 1 or '--help' in args or '-h' in args:
     print(HELP_MESSAGE)
     exit()
 
+verbosity = defaultVerbosity + args.count('-v') - args.count('-q')
+
 CITY = args[0]
-if args[1] in LANGUAGUES:
+if len(args) > 1 and args[1] in LANGUAGUES:
     defaultLang = args[1]
+
+def get_desc(url, key, value, desc_field):
+    data = requests.get(url).json()['data']
+    for item in data:
+        if str(item[key]) == str(value):
+            return item[f'{desc_field}{defaultLang}']
+    return None
 
 cityCodes = requests.get('https://api.ipma.pt/open-data/distrits-islands.json')
 cityJson = cityCodes.json()
@@ -58,10 +66,12 @@ weatherType = weather['idWeatherType']
 precProb = weather['precipitaProb']
 precInt = weather['classPrecInt']
 
-weatherTypeCodes = requests.get('https://api.ipma.pt/open-data/weather-type-classe.json')
-typeJson = weatherTypeCodes.json()
-for i in typeJson['data']:
-    if i['idWeatherType'] == weatherType:
-        info = i[f'descWeatherType{defaultLang}']
+weatherDesc = get_desc('https://api.ipma.pt/open-data/weather-type-classe.json', 'idWeatherType', weatherType, 'descWeatherType')
+wind = get_desc('https://api.ipma.pt/open-data/wind-speed-daily-classe.json', 'classWindSpeed', windStr, 'descClassWindSpeedDaily')
+prec = get_desc('https://api.ipma.pt/open-data/precipitation-classe.json', 'classPrecInt', precInt, 'descClassPrecInt')
 
-print(f"{tMin}-{tMax}ºC: {info}")
+if verbosity  <= 1:
+    print(f'{tMin}-{tMax}ºC: {weatherDesc.lower()}') 
+elif verbosity > 1:
+    windDesc = f'{wind.lower()} wind {windDir}' if defaultLang == 'EN' else f'vento {wind.lower()} {windDir}'
+    print(f'{tMin}-{tMax}ºC: {weatherDesc.lower()} - {windDesc}')

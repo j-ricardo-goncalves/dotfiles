@@ -10,7 +10,10 @@
         "hyprland/workspaces",
         "hyprland/window",
     ],
-    "modules-center": ["clock", "custom/weather"],
+    "modules-center": [
+	"clock", 
+	"custom/weather"
+    ],
     "modules-right": [
         "pulseaudio",
         "network",
