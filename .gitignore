@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# Except my dotfiles
+!waybar/
+!waybar/**
+!hypr/
+!hypr/**
+!fastfetch/
+!fastfetch/**
+
+# And the gitignore file
+!.gitignore
