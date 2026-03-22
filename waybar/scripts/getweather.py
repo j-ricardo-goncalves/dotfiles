@@ -57,14 +57,16 @@ for zone in weatherJson['data']:
         weather = zone
         break
 
-# could let it be but for now its more comprehensible this way
 tMax = weather['tMax']
 tMin = weather['tMin']
 windDir = weather['predWindDir']
 windStr = weather['classWindSpeed']
 weatherType = weather['idWeatherType']
 precProb = weather['precipitaProb']
-precInt = weather['classPrecInt']
+try:
+    precInt = weather['classPrecInt']
+except KeyError:
+    precInt = 0
 
 weatherDesc = get_desc('https://api.ipma.pt/open-data/weather-type-classe.json', 'idWeatherType', weatherType, 'descWeatherType')
 wind = get_desc('https://api.ipma.pt/open-data/wind-speed-daily-classe.json', 'classWindSpeed', windStr, 'descClassWindSpeedDaily')

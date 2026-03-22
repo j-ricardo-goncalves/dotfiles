@@ -15,55 +15,33 @@
 	"custom/weather"
     ],
     "modules-right": [
-        "pulseaudio",
         "network",
-        "power-profiles-daemon",
-        "temperature",
+	"bluetooth",
+        "pulseaudio",
         "backlight",
-        "battery",
-        "tray"
+        "battery"
     ],
     // Modules configuration
-    //"hyprland/workspaces": {
+    "hyprland/workspaces": {
     //     "disable-scroll": true,
     //     "all-outputs": true,
     //     "warp-on-scroll": false,
-    //     "format": "{name}: {icon}",
-    //     "format-icons": {
-    //         "1": "",
-    //         "2": "",
-    //         "3": "",
-    //         "4": "",
-    //         "5": "",
-    //         "urgent": "",
-    //         "focused": "",
-    //         "default": ""
-    //     }
-    //},
+         "format": "{icon}",
+         "format-icons": {
+             "default": "○"
+         }
+    },
     "custom/weather": {
 	"format": "{text}",
 	"exec": "~/.config/waybar/scripts/getweather.py Lisboa PT -q",
-	"interval": 60,	
-    },
-    "tray": {
-        // "icon-size": 21,
-        "spacing": 10,
-        // "icons": {
-        //   "blueman": "bluetooth",
-        //   "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
-        // }
+	"interval": 120,
+	"tooltip": true,
+    	"tooltip-format": ""
     },
     "clock": {
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "format-alt": "{:%Y-%m-%d}"
-    },
-    "cpu": {
-        "format": "{usage}% ",
-        "tooltip": false
-    },
-    "memory": {
-        "format": "{}% "
     },
     "temperature": {
         // "thermal-zone": 2,
@@ -71,7 +49,8 @@
         "critical-threshold": 80,
         // "format-critical": "{temperatureC}°C {icon}",
         "format": "{temperatureC}°C {icon}",
-        "format-icons": ["", "", ""]
+        "format-icons": [""],
+	"on-click": "kitty --hold -c sh ~/.config/waybar/scripts/openbtop.sh"
     },
     "backlight": {
         // "device": "acpi_video1",
@@ -80,8 +59,8 @@
     },
     "battery": {
         "states": {
-            // "good": 95,
-            "warning": 30,
+            "good": 95,
+            "warning": 40,
             "critical": 15
         },
         "format": "{capacity}% {icon}",
@@ -93,17 +72,6 @@
         // "format-full": "",
         "format-icons": ["", "", "", "", ""]
     },
-    "power-profiles-daemon": {
-      "format": "{icon}",
-      "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
-      "tooltip": true,
-      "format-icons": {
-        "default": "",
-        "performance": "",
-        "balanced": "",
-        "power-saver": ""
-      }
-    },
     "network": {
         // "interface": "wlp2*", // (Optional) To force the use of this interface
         "format-wifi": "{essid} ({signalStrength}%) ",
@@ -112,37 +80,25 @@
         "format-linked": "{ifname} (No IP) ",
         "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
-	"on-click-left": "nmtui"
+	"on-click-right": "kitty sh ~/.config/waybar/scripts/opennetworkconfig.sh"
+    },
+    "bluetooth": {
+	"format": "󰂯",
+	"format-disabled": "󰂲",
+	"format-off": "󰂲",
+	"format-on": "󰂰",
+	"format-connected": "󰂱",
+	"on-click": "kitty sh ~/.config/waybar/scripts/openbluetui.sh"
     },
     "pulseaudio": {
         // "scroll-step": 1, // %, can be a float
         "format": "{volume}% {icon} {format_source}",
-        "format-bluetooth": "{volume}% {icon} {format_source}",
-        "format-bluetooth-muted": " {icon} {format_source}",
-        "format-muted": " {format_source}",
-        "format-source": "{volume}% ",
-        "format-source-muted": "",
+        "format-source": " ",
+        "format-source-muted": " ",
         "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
             "default": ["", "", ""]
         },
         "on-click": "pavucontrol"
-    },
-    "custom/media": {
-        "format": "{icon} {text}",
-        "return-type": "json",
-        "max-length": 40,
-        "format-icons": {
-            "spotify": "",
-            "default": "🎜"
-        },
-        "escape": true,
-        "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
-        // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
     }
  }
+ 
